@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import SearchBar from './components/SearchBar'
 import WeatherDisplay from './components/WeatherDisplay'
+import './App.css'
 
 const API_KEY = import.meta.env.VITE_API_KEY
 
@@ -35,9 +36,9 @@ function App() {
   }
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'Arial' }}>
-      <h2>Weather App</h2>
-      <SearchBar Bar onSearch={fetchWeather} />
+    <div className="app-container">
+      <h2>Weather Search App</h2>
+      <SearchBar onSearch={fetchWeather} />
       <WeatherDisplay weather={weather} />
     </div>
   )
