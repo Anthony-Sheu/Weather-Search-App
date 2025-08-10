@@ -1,32 +1,52 @@
 import React, { useState } from "react";
 
-function SearchBar({ onSearch }) {
+const API_KEY = import.meta.env.VITE_API_KEY
+
+function SearchBar({ onCitySelect }) {
     const [searchInput, setSearchInput] = useState('')
-    const handleSearch = (event) => { setSearchInput(event.target.value) }
-    const handleSubmit = (event) => {
-        event.preventDefault()
-        onSearch(searchInput)
+    const [suggestions, setSuggestions] = useState([])
+
+    const handleSelectCity = (city) => {
+        setSearchInput(city.name)
+        setSuggestions([])
+        onCitySelect(city.key, city.name, city.adm, city.country)
+    }
+
+    const handleSearchChange = async (e) => {
+        const city = e.target.value
+        setSearchInput(city)
+        const data = await fetch(
+            `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${API_KEY}&q=${city}`
+        )
+        const locations = await data.json()
+        const formatted = locations.map(city => ({
+            name: city.LocalizedName,
+            country: city.Country.LocalizedName,
+            adm: city.AdministrativeArea.LocalizedName,
+            key: city.Key
+        }))
+        setSuggestions(formatted)
     }
 
     return (
-        <div style={{ padding: '2rem', fontFamily: 'Arial' }}>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Enter City"
-                    value={searchInput}
-                    onChange={handleSearch}
-                    style={{
-                        padding: '0.5rem',
-                        fontSize: '1rem',
-                        width: '250px',
-                        marginRight: '1rem'
-                    }}
-                />
-                <button type="submit" style={{ padding: '0.5rem 1rem' }}>
-                    Search
-                </button>
-            </form>
+        <div>
+            <input
+                type="text"
+                value={searchInput}
+                onChange={handleSearchChange}
+                placeholder="Enter city name"
+            />
+            <ul>
+                {suggestions.map((city, index) => (
+                    <li
+                        key={index}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleSelectCity(city)}
+                    >
+                        {city.name}, {city.adm}, {city.country}
+                    </li>
+                ))}
+            </ul>
         </div>
     )
 }

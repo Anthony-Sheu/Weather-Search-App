@@ -9,25 +9,20 @@ function App() {
 
   const [weather, setWeather] = useState(null)
 
-  const fetchWeather = async (city) => {
+  const fetchWeather = async (locKey, city, adm, country) => {
     try {
-      const locRes = await fetch(
-        `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${API_KEY}&q=${city}`
-      )
-      const locations = await locRes.json()
-      if (!locations.length) {
-        alert('City not found')
-        return
-      }
-      const locationKey = locations[0].Key
-      const weatherRes = await fetch(
-        `http://dataservice.accuweather.com/currentconditions/v1/${locationKey}?apikey=${API_KEY}`
-      )
-      const weatherData = await weatherRes.json()
+
+      const res = await fetch(
+        `http://dataservice.accuweather.com/currentconditions/v1/${locKey}?apikey=${API_KEY}`
+      );
+      const data = await res.json();
       setWeather({
-        text: weatherData[0].WeatherText,
-        temp: weatherData[0].Temperature.Metric.Value,
-        unit: weatherData[0].Temperature.Metric.Unit,
+        text: data[0].WeatherText,
+        temp: data[0].Temperature.Metric.Value,
+        unit: data[0].Temperature.Metric.Unit,
+        name: city,
+        adm: adm,
+        country: country
       })
     } catch (err) {
       console.error('Fetch error:', err)
@@ -38,7 +33,7 @@ function App() {
   return (
     <div className="app-container">
       <h2>Weather Search App</h2>
-      <SearchBar onSearch={fetchWeather} />
+      <SearchBar onCitySelect={fetchWeather} />
       <WeatherDisplay weather={weather} />
     </div>
   )

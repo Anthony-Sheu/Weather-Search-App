@@ -5,7 +5,7 @@ function WeatherDisplay({ weather }) {
 
     return (
         <div>
-            <h3>Current Weather</h3>
+            <h3>Current Weather for {weather.name}, {weather.adm}, {weather.country}</h3>
             <p>{weather.text}</p>
             <p>Temperature: {weather.temp}°{weather.unit}</p>
         </div>
