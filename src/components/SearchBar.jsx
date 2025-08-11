@@ -34,7 +34,15 @@ function SearchBar({ onCitySelect }) {
     }
 
     return (
-        <div>
+        <div style={{
+            position: "fixed",
+            top: "80px", // right below title
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 999,
+            padding: "10px",
+            borderRadius: "8px",
+        }}>
             <form onSubmit={handleSearchChange} style={{ display: "flex", gap: "5px" }}>
                 <input
                     type="text"

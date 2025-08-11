@@ -32,7 +32,19 @@ function App() {
 
   return (
     <div className="app-container">
-      <h2>Weather Search App</h2>
+      <h1
+        style={{
+          position: "fixed",
+          top: "30px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          padding: "10px 20px",
+          margin: 0,
+          zIndex: 1000,
+        }}
+      >
+        Weather Search App
+      </h1>
       <SearchBar onCitySelect={fetchWeather} />
       <WeatherDisplay weather={weather} />
     </div>
