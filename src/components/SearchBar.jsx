@@ -13,11 +13,11 @@ function SearchBar({ onCitySelect }) {
     }
 
     const handleSearchChange = async (e) => {
-        const city = e.target.value
-        setSearchInput(city)
+        e.preventDefault()
+        if (searchInput.trim() === "") return
         try {
             const data = await fetch(
-                `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${API_KEY}&q=${city}`
+                `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${API_KEY}&q=${searchInput}`
             )
             const locations = await data.json()
             const formatted = locations.map(city => ({
@@ -35,18 +35,22 @@ function SearchBar({ onCitySelect }) {
 
     return (
         <div>
-            <input
-                type="text"
-                value={searchInput}
-                onChange={handleSearchChange}
-                placeholder="Enter city name"
-                style={{
-                    padding: "8px",
-                    fontSize: "1rem",
-                    width: "250px",
-                    marginBottom: "10px",
-                }}
-            />
+            <form onSubmit={handleSearchChange} style={{ display: "flex", gap: "5px" }}>
+                <input
+                    type="text"
+                    placeholder="Enter city name"
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    style={{
+                        padding: "0.5rem",
+                        flex: 1,
+                        boxSizing: "border-box"
+                    }}
+                />
+                <button type="submit" style={{ padding: "0.5rem 1rem" }}>
+                    Search
+                </button>
+            </form>
 
             {suggestions.length > 0 && (
                 <div
@@ -74,7 +78,7 @@ function SearchBar({ onCitySelect }) {
                             }}
                             onClick={() => handleSelectCity(city)}
                         >
-                            <strong>{city.name}</strong>
+                            <strong>{city.name}, {city.adm}</strong>
                             <br />
                             <span style={{ color: "#555" }}>{city.country}</span>
                         </div>
