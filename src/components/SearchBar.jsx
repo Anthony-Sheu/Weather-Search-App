@@ -1,19 +1,22 @@
 import React, { useState } from "react";
+import search_icon from '../assets/search.png'
+import './SearchBar.css'
 
 const API_KEY = import.meta.env.VITE_API_KEY
 
 function SearchBar({ onCitySelect }) {
     const [searchInput, setSearchInput] = useState('')
     const [suggestions, setSuggestions] = useState([])
+    const [dropVisible, setDropVisible] = useState(false)
 
     const handleSelectCity = (city) => {
         setSearchInput(city.name)
         setSuggestions([])
+        setDropVisible(false)
         onCitySelect(city.key, city.name, city.adm, city.country)
     }
 
     const handleSearchChange = async (e) => {
-        e.preventDefault()
         if (searchInput.trim() === "") return
         try {
             const data = await fetch(
@@ -27,73 +30,45 @@ function SearchBar({ onCitySelect }) {
                 key: city.Key
             }))
             setSuggestions(formatted)
+            setDropVisible(true)
         } catch (err) {
-            console.error("Error fetching city suggestions:", err);
+            alert(searchInput)
+            alert("Error fetching city suggestions:", err);
             setSuggestions([]);
         }
     }
 
     return (
-        <div style={{
-            position: "fixed",
-            top: "80px", // right below title
-            left: "50%",
-            transform: "translateX(-50%)",
-            zIndex: 999,
-            padding: "10px",
-            borderRadius: "8px",
-        }}>
-            <form onSubmit={handleSearchChange} style={{ display: "flex", gap: "5px" }}>
+        <div className='search-bar-container'>
+            <div className="search-bar">
                 <input
                     type="text"
                     placeholder="Enter city name"
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
-                    style={{
-                        padding: "0.5rem",
-                        flex: 1,
-                        boxSizing: "border-box"
-                    }}
                 />
-                <button type="submit" style={{ padding: "0.5rem 1rem" }}>
-                    Search
-                </button>
-            </form>
+                <img
+                    src={search_icon}
+                    alt=""
+                    onClick={handleSearchChange}
+                />
+            </div>
 
-            {suggestions.length > 0 && (
-                <div
-                    style={{
-                        maxHeight: "220px",
-                        overflowY: "auto",
-                        border: "1px solid #ccc",
-                        borderRadius: "8px",
-                        padding: "8px",
-                        backgroundColor: "#f9f9f9",
-                        width: "270px",
-                    }}
-                >
-                    {suggestions.map((city, index) => (
+            {dropVisible && suggestions.length > 0 && (
+                <div className="dropdown">
+                    {suggestions.map((city) => (
                         <div
-                            key={index}
-                            style={{
-                                border: "1px solid #ddd",
-                                borderRadius: "6px",
-                                padding: "10px",
-                                marginBottom: "8px",
-                                backgroundColor: "#fff",
-                                cursor: "pointer",
-                                boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                            }}
+                            key={city.key}
+                            className="dropdown-item"
                             onClick={() => handleSelectCity(city)}
                         >
-                            <strong>{city.name}, {city.adm}</strong>
-                            <br />
-                            <span style={{ color: "#555" }}>{city.country}</span>
+                            {city.name}, {city.adm}, {city.country}
                         </div>
                     ))}
                 </div>
             )}
         </div>
-    );
+    )
+
 }
 export default SearchBar
