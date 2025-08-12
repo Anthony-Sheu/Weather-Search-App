@@ -1,4 +1,4 @@
-/* * {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -8,7 +8,6 @@ html,
 body,
 #root {
     height: 100%;
-    background-color: #3480eb;
 }
 
 .app-container {
@@ -21,4 +20,4 @@ body,
     padding: 2rem;
     font-family: Arial, sans-serif;
     text-align: center;
-} */
+}
