@@ -46,13 +46,13 @@ const WeatherDisplay = () => {
     const fetchWeather = async (locKey, city, adm, country) => {
         try {
             const res = await fetch(
-                `http://dataservice.accuweather.com/currentconditions/v1/${locKey}?apikey=${API_KEY}`
+                `http://dataservice.accuweather.com/currentconditions/v1/${locKey}?apikey=${API_KEY}&details=true`
             )
             const data = await res.json();
             setWeather({
                 text: data[0].WeatherText,
                 temp: data[0].Temperature.Metric.Value,
-                wind: data[0].Wind.Speed,
+                wind: data[0].Wind.Speed.Metric.Value,
                 humidity: data[0].RelativeHumidity,
                 time: data[0].LocalObservationDateTime,
                 name: city,
@@ -78,7 +78,7 @@ const WeatherDisplay = () => {
             <SearchBar onCitySelect={fetchWeather} />
             <img src={getWeatherIcon(weather?.text)} alt="" className='weather-icon' />
             <p className='temperature'>{weather?.temp}°C, {weather?.text}</p>
-            <p className='location'>{weather?.name}</p>
+            <p className='location'>{weather?.name}, {weather?.adm}, {weather?.country}</p>
             <div className="weather-data">
                 <div className="col">
                     <img src={humidityIcon} alt="" />
