@@ -45,27 +45,27 @@ const WeatherDisplay = () => {
 
     const fetchWeather = async (locKey, city, adm, country) => {
         try {
-            // const res = await fetch(
-            //     `http://dataservice.accuweather.com/currentconditions/v1/${locKey}?apikey=${API_KEY}`
-            // )
-            // const data = await res.json();
+            const res = await fetch(
+                `http://dataservice.accuweather.com/currentconditions/v1/${locKey}?apikey=${API_KEY}`
+            )
+            const data = await res.json();
             setWeather({
-                // text: data[0].WeatherText,
-                // temp: data[0].Temperature.Metric.Value,
-                // wind: data[0].Wind.Speed,
-                // humidity: data[0].RelativeHumidity,
-                // time: data[0].LocalObservationDateTime
-                // name: city,
-                // adm: adm,
-                // country: country
-                text: "Sunny",
-                temp: 16,
-                wind: 19,
-                humidity: 91,
-                time: "2025-08-11T14:30:00-04:00",
-                name: "Richmond",
-                adm: "British Columbia",
-                country: "Canada"
+                text: data[0].WeatherText,
+                temp: data[0].Temperature.Metric.Value,
+                wind: data[0].Wind.Speed,
+                humidity: data[0].RelativeHumidity,
+                time: data[0].LocalObservationDateTime,
+                name: city,
+                adm: adm,
+                country: country
+                // text: "Sunny",
+                // temp: 16,
+                // wind: 19,
+                // humidity: 91,
+                // time: "2025-08-11T20:15:00Z",
+                // name: "Richmond",
+                // adm: "British Columbia",
+                // country: "Canada"
             })
         } catch (err) {
             console.error('Fetch error:', err)

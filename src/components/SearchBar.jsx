@@ -13,7 +13,7 @@ function SearchBar({ onCitySelect }) {
         setSearchInput(city.name)
         setSuggestions([])
         setDropVisible(false)
-        onCitySelect(47173, "Richmond", "British Columbia", "Canada")
+        onCitySelect(city.key, city.name, city.adm, city.country)
     }
 
     const handleSearchChange = async (e) => {
@@ -22,7 +22,6 @@ function SearchBar({ onCitySelect }) {
             const data = await fetch(
                 `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${API_KEY}&q=${searchInput}`
             )
-            console.log(data)
             const locations = await data.json()
             const formatted = locations.map(city => ({
                 name: city.LocalizedName,
@@ -33,7 +32,6 @@ function SearchBar({ onCitySelect }) {
             setSuggestions(formatted)
             setDropVisible(true)
         } catch (err) {
-            alert(searchInput)
             alert("Error fetching city suggestions:", err);
             setSuggestions([]);
         }
