@@ -11,35 +11,61 @@ import windIcon from '../assets/wind.png'
 
 const API_KEY = import.meta.env.VITE_API_KEY
 
-// function WeatherDisplay({ weather }) {
-//     if (!weather) return null
+function getWeatherIcon(weatherText) {
+    if (!weatherText) return clearIcon
+    const text = weatherText.toLowerCase()
+    if (text === "sunny") return clearIcon
+    if (text.includes("shower") || text.includes("flurries")) return drizzleIcon
+    if (text.includes("rain") || text.includes("t-storms")) return rainIcon
+    if (text.includes("snow") || text.includes("ice") || text.includes("sleet")) return snowIcon
+    return cloudIcon
+}
 
-//     return (
-//         <div>
-//             <h3>Current Weather for {weather.name}, {weather.adm}, {weather.country}</h3>
-//             <p>{weather.text}</p>
-//             <p>Temperature: {weather.temp}°{weather.unit}</p>
-//         </div>
-//     )
-// }
+function getLocal(iso) {
+    const match = iso.match(/([+-]\d{2}):(\d{2})$/);
+    const date = new Date(iso);
+    if (match) {
+        const offsetHours = parseInt(match[1], 10);
+        const utcHour = date.getUTCHours();
+        return (utcHour + offsetHours + 24) % 24;
+    }
+    return date.getUTCHours();
+}
+
+function getTime(weatherTime) {
+    if (!weatherTime) return ""
+    const hour = getLocal(weatherTime)
+    if (hour >= 18 || hour < 6) return "night"
+    if (hour >= 6 && hour < 12) return "morning"
+    return "afternoon"
+}
 
 const WeatherDisplay = () => {
     const [weather, setWeather] = useState(null)
 
     const fetchWeather = async (locKey, city, adm, country) => {
         try {
-
-            const res = await fetch(
-                `http://dataservice.accuweather.com/currentconditions/v1/${locKey}?apikey=${API_KEY}`
-            );
-            const data = await res.json();
+            // const res = await fetch(
+            //     `http://dataservice.accuweather.com/currentconditions/v1/${locKey}?apikey=${API_KEY}`
+            // )
+            // const data = await res.json();
             setWeather({
-                text: data[0].WeatherText,
-                temp: data[0].Temperature.Metric.Value,
-                unit: data[0].Temperature.Metric.Unit,
-                name: city,
-                adm: adm,
-                country: country
+                // text: data[0].WeatherText,
+                // temp: data[0].Temperature.Metric.Value,
+                // wind: data[0].Wind.Speed,
+                // humidity: data[0].RelativeHumidity,
+                // time: data[0].LocalObservationDateTime
+                // name: city,
+                // adm: adm,
+                // country: country
+                text: "Sunny",
+                temp: 16,
+                wind: 19,
+                humidity: 91,
+                time: "2025-08-11T14:30:00-04:00",
+                name: "Richmond",
+                adm: "British Columbia",
+                country: "Canada"
             })
         } catch (err) {
             console.error('Fetch error:', err)
@@ -48,27 +74,23 @@ const WeatherDisplay = () => {
     }
 
     return (
-        <div className='weather'>
-            {/* <div className="search-bar">
-                <input type="text" placeholder='Search' />
-                <img src={search_icon} alt="" />
-            </div> */}
+        <div className={`weather ${getTime(weather?.time)}`}>
             <SearchBar onCitySelect={fetchWeather} />
-            <img src={clearIcon} alt="" className='weather-icon' />
-            <p className='temperature'>16°C</p>
-            <p className='location'>Richmond</p>
+            <img src={getWeatherIcon(weather?.text)} alt="" className='weather-icon' />
+            <p className='temperature'>{weather?.temp}°C, {weather?.text}</p>
+            <p className='location'>{weather?.name}</p>
             <div className="weather-data">
                 <div className="col">
                     <img src={humidityIcon} alt="" />
                     <div>
-                        <p>91 %</p>
+                        <p>{weather?.humidity} %</p>
                         <span>Humidity</span>
                     </div>
                 </div>
                 <div className="col">
                     <img src={windIcon} alt="" />
                     <div>
-                        <p>1 km/h</p>
+                        <p>{weather?.wind} km/h</p>
                         <span>Wind Speed</span>
                     </div>
                 </div>

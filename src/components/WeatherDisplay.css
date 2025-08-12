@@ -8,6 +8,18 @@
     align-items: center;
 }
 
+.weather.morning {
+    background: linear-gradient(to bottom, #9bafd9, #103783);
+}
+
+.weather.afternoon {
+    background: linear-gradient(to bottom, #F7C566, #DC6B19, #6C0345);
+}
+
+.weather.night {
+    background: linear-gradient(to bottom, #E9D5DA, #827397, #4D4C7D, #363062);
+}
+
 .weather-icon {
     width: 150px;
     margin: 30px 0;
@@ -15,7 +27,7 @@
 
 .temperature {
     color: #fff;
-    font-size: 80px;
+    font-size: 65px;
     line-height: 1;
 }
 
